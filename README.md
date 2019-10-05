@@ -412,7 +412,22 @@ Output:
 Group operation. Group values by key.groupFunc: func(o T1) (key T2,value T3). Return map[T2]T3.
 
     func (s *stream) Group(groupFunc interface{}) interface{}\
-
+    
+Sample:
+        
+        students := createStudents()
+        stream, _ := stream.New(students)
+        grps := stream.Group(func(s student) (int, student){ return s.age, s })
+        if actualKind := reflect.TypeOf(grps).Kind(); actualKind != reflect.Map {
+            fmt.Printf("expection is map but actual is %v\n", actualKind )
+        } else {
+            for key := range grps.(map[interface{}]interface{}) {
+                if key.(int) >20 || key.(int) <15 {
+                    fmt.Printf("actual age %v exceed actual range when creating students\n", key.(int) )
+                }
+            }
+        }
+        
 ### Max ###
 Max operation.lessFunc: func(o1,o2 T) bool
 

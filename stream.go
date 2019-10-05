@@ -348,13 +348,12 @@ func (s *Stream) Group(groupFunc interface{}) interface{} {
 	for _, it := range data {
 		out := call(funcValue, it)
 		sliceValue := rValue.MapIndex(out[0])
-		if sliceValue.IsNil() || !sliceValue.IsValid() {
+		if  !sliceValue.IsValid() || sliceValue.IsNil()  {
 			sliceValue = reflect.ValueOf(make([]interface{}, 0))
 		}
-		sliceValue.Set(reflect.Append(sliceValue, out[1]))
-		rValue.SetMapIndex(out[0], sliceValue)
+		rValue.SetMapIndex(out[0], reflect.Append(reflect.ValueOf(sliceValue.Interface()), out[1]))
 	}
-	return s
+	return result
 }
 
 // Max operation.lessFunc: func(o1,o2 T) bool

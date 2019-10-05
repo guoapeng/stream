@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/guoapeng/stream"
 	"math/rand"
+	"reflect"
 	"testing"
 )
 
@@ -275,6 +276,22 @@ func TestToSlice(t *testing.T) {
 	stream.ToSlice(&slice)
 	fmt.Println(slice)
 	fmt.Println()
+}
+
+func TestGroup(t *testing.T) {
+	fmt.Println(t.Name() + ": group by class")
+	students := createStudents()
+	stream, _ := stream.New(students)
+	grps := stream.Group(func(s student) (int, student){ return s.age, s })
+	if actualKind := reflect.TypeOf(grps).Kind(); actualKind != reflect.Map {
+		t.Errorf("expection is map but actual is %v", actualKind )
+	} else {
+		for key := range grps.(map[interface{}]interface{}) {
+			if key.(int) >26 || key.(int) <15 {
+				t.Errorf("actual age %v exceed actual range when creating students", key.(int) )
+			}
+		}
+	}
 }
 
 func TestPointer(t *testing.T) {
